@@ -1,0 +1,25 @@
+server:
+  port: 8081
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+spring:
+  application:
+    name: msTeam
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: teamdb
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb: DEBUG
