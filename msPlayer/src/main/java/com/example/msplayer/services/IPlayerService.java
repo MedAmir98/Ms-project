@@ -1,2 +1,17 @@
-package com.example.msplayer.services;public interface IPlayerService {
+package com.example.msplayer.services;
+
+
+
+import com.example.msplayer.dto.PlayerAddResponse;
+import com.example.msplayer.dto.PlayerDto;
+
+import java.util.List;
+
+public interface IPlayerService {
+
+
+    PlayerAddResponse addPlayer(PlayerDto playerDto);
+    List<PlayerDto> getAllPlayers();
+    PlayerDto getPlayerById(Long id);
+
 }

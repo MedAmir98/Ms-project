@@ -20,3 +20,27 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+kafka:
+  producer:
+    bootstrap-servers: localhost:9092
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  consumer:
+    bootstrap-servers: localhost:9092
+    group-id: player-group
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring:
+        kafka:
+          consumer:
+            value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+            key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+          deserializer:
+            value-delegate: org.springframework.kafka.support.serializer.JsonDeserializer
+            key-delegate: org.apache.kafka.common.serialization.StringDeserializer
+            trusted.packages: '*'
+
+

@@ -1,2 +1,42 @@
-package com.example.msplayer.controller;public class PlayerController {
+package com.example.msplayer.controller;
+
+
+
+import java.util.List;
+
+import com.example.msplayer.dto.PlayerAddResponse;
+import com.example.msplayer.dto.PlayerDto;
+import com.example.msplayer.services.IPlayerService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+
+@RestController
+@RequestMapping("/api/players")
+@AllArgsConstructor
+@CrossOrigin(origins = "*")
+public class PlayerController {
+
+    @Autowired
+    private IPlayerService playerService;
+
+
+    @GetMapping("/{id}")
+    public PlayerDto getPlayerById(@PathVariable Long id) {
+        return playerService.getPlayerById(id);
+    }
+
+    @GetMapping("/allPlayers")
+    public ResponseEntity<List<PlayerDto>> getAllPlayers() {
+        return ResponseEntity.ok(playerService.getAllPlayers());
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<PlayerAddResponse> addPlayer(@RequestBody PlayerDto playerDto) {
+        return ResponseEntity.ok(playerService.addPlayer(playerDto));
+    }
 }
