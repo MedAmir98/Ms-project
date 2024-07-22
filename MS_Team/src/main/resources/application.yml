@@ -18,3 +18,20 @@ spring:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: team-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          kafka:
+            consumer:
+              value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+              key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+            deserializer:
+              value-delegate: org.springframework.kafka.support.serializer.JsonDeserializer
+              key-delegate: org.apache.kafka.common.serialization.StringDeserializer
+              trusted.packages: '*'
