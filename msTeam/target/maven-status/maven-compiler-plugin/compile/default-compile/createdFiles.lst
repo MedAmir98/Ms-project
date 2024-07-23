@@ -1,0 +1,8 @@
+serviceImpl\TeamServiceImpl.class
+com\example\msteam\MsTeamApplication.class
+dto\TeamDTO.class
+entity\Team.class
+mapper\TeamMapper.class
+repository\TeamRepository.class
+service\TeamService.class
+controller\TeamController.class

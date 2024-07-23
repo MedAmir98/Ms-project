@@ -13,13 +13,8 @@ spring:
     name: msTeam
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: teamdb
+      uri: mongodb://localhost:27017/teamdb
 
 logging:
   level:
-    org:
-      springframework:
-        data:
-          mongodb: DEBUG
+    org.springframework.data.mongodb: DEBUG

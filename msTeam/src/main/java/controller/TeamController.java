@@ -1,6 +1,7 @@
 package controller;
 
 import dto.TeamDTO;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,8 @@ import service.TeamService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/teams")
+@RequestMapping("/api/teams")
+@CrossOrigin(origins = "*")
 public class TeamController {
 
     @Autowired
@@ -20,12 +22,12 @@ public class TeamController {
         return ResponseEntity.ok(teamService.getTeamById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<TeamDTO>> getAllTeams() {
         return ResponseEntity.ok(teamService.getAllTeams());
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {
         return ResponseEntity.ok(teamService.createTeam(teamDTO));
     }

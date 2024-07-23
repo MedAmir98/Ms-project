@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  msTeam-service:
+    image: team-micro-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_APPLICATION_NAME=msTeam
+      - SERVER_PORT=8081
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/teamdb
+    depends_on:
+      - eureka-server
+      - api-gateway
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: teamdb
+
+  eureka-server:
+    image: eureka-server:latest
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    image: api-gateway:latest
+    ports:
+      - "8080:8080"

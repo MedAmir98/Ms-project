@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  user-service:
+    image: player-micro-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_APPLICATION_NAME=msPlayer
+      - SERVER_PORT=8082
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/playerdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - eureka-server
+      - api-gateway
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_DATABASE: playerdb
+    ports:
+      - "3306:3306"
+
+  eureka-server:
+    image: eureka-server:latest
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    image: api-gateway:latest
+    ports:
+      - "8080:8080"
