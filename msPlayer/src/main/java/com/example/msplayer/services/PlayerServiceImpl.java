@@ -9,6 +9,7 @@ import com.example.msplayer.feign.TeamClient;
 import com.example.msplayer.mapper.PlayerMapper;
 import com.example.msplayer.repository.PlayerRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PlayerServiceImpl implements IPlayerService {
     private final PlayerRepository playerRepository;
     private final TeamClient teamClient;
@@ -44,7 +46,6 @@ public class PlayerServiceImpl implements IPlayerService {
             throw new ProjectException(HttpStatus.BAD_REQUEST, "Invalid Team ID format");
         }
 
-        kafkaTemplate.send(TOPIC, teamObjectId.toString());
 
         var team = teamClient.getTeamById(teamObjectId.toString());
         if (team == null) {
@@ -52,14 +53,41 @@ public class PlayerServiceImpl implements IPlayerService {
         }
         var playerJpa = playerRepository.save(playerMapper.playerDtoToPlayer(playerDto));
         return PlayerAddResponse.builder()
+                .id(playerJpa.getId())
                 .playerFirstName(playerJpa.getPlayerFirstName())
                 .playerLastName(playerJpa.getPlayerLastName())
                 .playerEmail(playerJpa.getPlayerEmail())
                 .playerAge(playerJpa.getPlayerAge())
                 .nationality(playerJpa.getNationality())
-                .teamDTO(null)
+                .teamDTO(team)
                 .build();
 
+    }
+
+    @Override
+    public PlayerAddResponse addAsyncPlayer(PlayerDto playerDto) {
+        log.info("Adding Player for team with ID: {}", playerDto.getTeamId());
+        var team = teamClient.getTeamById(playerDto.getTeamId());
+
+        if (team == null) {
+            log.error(TEAM_NOT_FOUND);
+            throw new ProjectException(HttpStatus.NOT_FOUND, TEAM_NOT_FOUND);
+        }
+            var playerJpa = playerRepository.save(playerMapper.playerDtoToPlayer(playerDto));
+            var playerAddResponse = PlayerAddResponse.builder()
+                    .id(playerJpa.getId())
+                    .playerFirstName(playerJpa.getPlayerFirstName())
+                    .playerLastName(playerJpa.getPlayerLastName())
+                    .playerEmail(playerJpa.getPlayerEmail())
+                    .playerAge(playerJpa.getPlayerAge())
+                    .nationality(playerJpa.getNationality())
+                    .teamDTO(team)
+                    .build() ;
+
+            kafkaTemplate.send(TOPIC, "Player added successfully");
+            log.info("Sent message to Kafka topic: {}", TOPIC);
+
+        return playerAddResponse;
     }
 
     @Override
@@ -67,6 +95,8 @@ public class PlayerServiceImpl implements IPlayerService {
         return playerRepository.findAll().stream().map(playerMapper::playerToPlayerDto).toList();
     }
 
+
+    // récuperer le joueur et les informations de l'équipe avec Kafka
     @Override
     public PlayerDto getPlayerById(Long id) {
         var player = playerRepository.findById(id)
@@ -80,7 +110,7 @@ public class PlayerServiceImpl implements IPlayerService {
 
 
     // récuperer le joueur et les informations de l'équipe avec feignClient
-    //    @Override
+//        @Override
 //    public PlayerDto getPlayerById(Long id) {
 //
 //        var player = playerRepository.findById(id)
@@ -132,7 +162,7 @@ public class PlayerServiceImpl implements IPlayerService {
 }
 
 
-// récuperer le joueur et les informations de l'équipe avec Kafka
+
 
 
 

@@ -9,6 +9,7 @@ import com.example.msplayer.dto.PlayerDto;
 import com.example.msplayer.services.IPlayerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,11 @@ public class PlayerController {
     @PostMapping("/add")
     public ResponseEntity<PlayerAddResponse> addPlayer(@RequestBody PlayerDto playerDto) {
         return ResponseEntity.ok(playerService.addPlayer(playerDto));
+    }
+
+    @PostMapping("/async/add")
+    @Transactional
+    public ResponseEntity<PlayerAddResponse> createAsyncProductByUser(@RequestBody PlayerDto playerDTO) {
+        return ResponseEntity.ok(playerService.addAsyncPlayer(playerDTO));
     }
 }

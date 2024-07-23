@@ -11,6 +11,7 @@ public interface IPlayerService {
 
 
     PlayerAddResponse addPlayer(PlayerDto playerDto);
+    PlayerAddResponse addAsyncPlayer(PlayerDto playerDto);
     List<PlayerDto> getAllPlayers();
     PlayerDto getPlayerById(Long id);
 
